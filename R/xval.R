@@ -90,7 +90,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   dirTmp=mkTmp()
   setwd(dirTmp)
 
-  file.copy(file.path(dirname(dat),"."),,dirTmp,r=T)
+  file.copy(file.path(dirname(dat),"."),dirTmp,r=T)
   
   #leave out obs
   u[,"fleet"]=-u[,"fleet"]
