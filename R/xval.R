@@ -108,9 +108,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   if (R.version$os=='linux-gnu') {
     exe = paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                 ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
-    if (length(grep("-rwxrwxr-x",system(paste("ls -l","pella"),intern=TRUE)))==0)
-      warning("Executable privilege not set for \n","pella",call.=FALSE)
-    
     file.copy(exe, dir)
     dir = paste(dir, '/', sep='')
     
