@@ -78,7 +78,7 @@ setJKNew<-function(x){
 
 mkTmp<-function(){
   dr=tempfile()
-  create.dir(dr)
+  dir.create(dr)
   
   dr}
 
