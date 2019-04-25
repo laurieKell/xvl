@@ -149,7 +149,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        .packages    =c("tMSE","r4ss")) %dopar%{
 
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
-       res=tMSE:::jkU(iRw,fls$u,fls$dfl,x,newVer)
+       res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
        rtn=cbind(tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))[,1:13]
@@ -209,7 +209,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   #for(i in yrs[seq(n)]){
   
      iRw=subset(fls$u,year>=i)[,"row"]
-     res=tMSE:::jkU(iRw,fls$u,fls$dfl,x,newVer)
+     res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
     
      ##bug
      #ggplot(subset(h1[[1]],year==tail+1))+
@@ -281,12 +281,12 @@ runJK<-function(x){
      .packages    =c("r4ss","tMSE")) %dopar%{
                 
      ## copy files from target 
-     dirTmp=tMSE:::mkTmp()
+     dirTmp=xvl:::mkTmp()
      setwd(dirTmp)
                 
      system(paste("cp",file.path(dir,"*.*"),dirTmp))
      iRw=fls$u[i,"row"]
-     res=tMSE:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
+     res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
                 
      write.table(res[[1]],file=file.path(dir, "xval",paste("prd",i,".csv",sep="")))
      write.table(res[[2]],file=file.path(dir, "xval",paste("ref",i,".csv",sep="")))
@@ -343,7 +343,7 @@ runJKBlock<-function(x,n=5){
                  
                 system(paste("cp",file.path(dir,"*.*"),dirTmp))
                 iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"min"]&year<=key[i,"max"])[,"row"]
-                res=tMSE:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
+                res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
                  
                 write.table(res[[1]],file=file.path(dir, "xvalBlock",paste("prd",i,".csv",sep="")))
                 write.table(res[[2]],file=file.path(dir, "xvalBlock",paste("ref",i,".csv",sep="")))
