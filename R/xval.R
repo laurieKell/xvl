@@ -108,18 +108,17 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   if (R.version$os=='linux-gnu') {
     exe = paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                 ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
-    file.copy(exe, dir)
-    dir = paste(dir, '/', sep='')
+    file.copy(exe, dirTmp)
     
-  system2(ifelse(newVer,"ss_opt","ss3_3.24z"),args="-nohess",stdout=NULL)
+    system2(ifelse(newVer,"/.ss_opt","./ss3_3.24z"),args="-nohess",stdout=NULL)
     
-    # Windows
+  # Windows
   } else if (.Platform$OS.type=='windows') {
     exe = paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE), 
                 ifelse(newVer,"SS3.exe","SS.exe"), sep='/')
     
-    file.copy(exe, file.path(dir,"pella.exe"))
-  
+    file.copy(exe, dirTmp)
+    
     system2(ifelse(newVer,"SS3.exe","SS.exe"),args="-nohess",stdout=NULL)
   }else 
     stop()
