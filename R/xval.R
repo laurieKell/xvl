@@ -162,6 +162,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
+  print(1)
   hRsd=foreach(i=seq(dim(key)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
@@ -180,7 +181,8 @@ runHcst<-function(x,n=10,newVer=FALSE){
        names(rtn)[3:13]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
 
        rtn}
- 
+  print(2)
+  
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
   if (newVer)
