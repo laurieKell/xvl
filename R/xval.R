@@ -146,7 +146,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   hRsd=foreach(i=seq(dim(key)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
-       .packages    =c("xval","r4ss")) %dopar%{
+       .packages    =c("xvl","r4ss")) %dopar%{
 
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
        res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
@@ -205,7 +205,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   hRsd=foreach(i=yrs[seq(n)],
                .multicombine=TRUE,
                .combine     =rbind.fill,
-               .packages    =c("xval","r4ss")) %dopar%{
+               .packages    =c("xvl","r4ss")) %dopar%{
   #for(i in yrs[seq(n)]){
   
      iRw=subset(fls$u,year>=i)[,"row"]
