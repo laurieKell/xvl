@@ -1,14 +1,11 @@
-Package: tMSE
+Package: xvl
 Title: Tools for hindcast 
 Version: 0.0.0.9000
 Authors@R: person("Laurence Kell", email="lauriekell@seaplusplus.co.uk", role=c("aut","cre"))
 Description: Tools for hindcasting
     limited stocks.
 Depends:
-    R (>= 3.4.1),
-    FLCore (>= 2.6.7),
-    FLBRP,
-    mpb
+    R (>= 3.4.1)
 Imports:
 License: GPL (>= 2)
 Suggests:
