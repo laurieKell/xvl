@@ -335,7 +335,7 @@ runJKBlock<-function(x,n=5){
   pRsd=foreach(i=seq(dim(key)[1]),
                .multicombine=TRUE,
                .combine     =rbind,
-               .packages    =c("r4ss","xval")) %dopar%{
+               .packages    =c("r4ss","xvl")) %dopar%{
                  
                 ## copy files from target 
                 dirTmp=mkTmp()
