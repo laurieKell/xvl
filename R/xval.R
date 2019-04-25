@@ -110,7 +110,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
                 ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
     file.copy(exe, dirTmp)
     
-    system2(ifelse(newVer,"/.ss_opt","./ss3_3.24z"),args="-nohess",stdout=NULL)
+    system2(ifelse(newVer,"./ss_opt","./ss3_3.24z"),args="-nohess",stdout=NULL)
     
   # Windows
   } else if (.Platform$OS.type=='windows') {
