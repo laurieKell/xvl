@@ -78,7 +78,7 @@ setJKNew<-function(x){
 
 mkTmp<-function(){
   dr=tempfile()
-  system(paste("mkdir",dr))
+  create.dir(dr)
   
   dr}
 
@@ -90,7 +90,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   dirTmp=mkTmp()
   setwd(dirTmp)
   
-  system(paste("cp",file.path(dirname(dat),"*.*"),dirTmp))
+  file.copy(file.path(dirname(dat),"/"),dirTmp,r=T)
   
   #leave out obs
   u[,"fleet"]=-u[,"fleet"]
@@ -99,11 +99,34 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   cat(tfl,sep="\n",file=file.path(dirTmp,substr(dat,nchar(dirname(dat))+2,nchar(dat))))
   
   #run
-  if (newVer)
-     system2("wine",args="ss.exe -nohess",stdout=NULL)
-  else  
-     system2("./ss3_3.24z",args="-nohess",stdout=NULL)
+  #if (newVer)
+  #   system2("wine",args="ss.exe -nohess",stdout=NULL)
+  #else  
+  #   system2("./ss3_3.24z",args="-nohess",stdout=NULL)
   
+  # Linux
+  if (R.version$os=='linux-gnu') {
+    exe = paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
+                ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
+    if (length(grep("-rwxrwxr-x",system(paste("ls -l","pella"),intern=TRUE)))==0)
+      warning("Executable privilege not set for \n","pella",call.=FALSE)
+    
+    file.copy(exe, dir)
+    dir = paste(dir, '/', sep='')
+    
+  system2(ifelse(newVer,"ss_opt","ss3_3.24z"),args="-nohess",stdout=NULL)
+    
+    # Windows
+  } else if (.Platform$OS.type=='windows') {
+    exe = paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE), 
+                ifelse(newVer,"SS3.exe","SS.exe"), sep='/')
+    
+    file.copy(exe, file.path(dir,"pella.exe"))
+  
+    system2(ifelse(newVer,"SS3.exe","SS.exe"),args="-nohess",stdout=NULL)
+  }else 
+    stop()
+
   #get results
   ssf=SS_output(getwd(), 
                 forecast  =FALSE, 
@@ -125,7 +148,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   #clean up  
   setwd(dirNow)
-  system(paste("rm -R",dirTmp))
+  file.remove(dirTmp,r=T)
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
@@ -284,7 +307,8 @@ runJK<-function(x){
      dirTmp=xvl:::mkTmp()
      setwd(dirTmp)
                 
-     system(paste("cp",file.path(dir,"*.*"),dirTmp))
+     file.copy(file.path(dirname(dir),"/"),dirTmp,r=T)
+     
      iRw=fls$u[i,"row"]
      res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
                 
@@ -294,7 +318,7 @@ runJK<-function(x){
                 
      #clean up  
      setwd(dirNow)
-     system(paste("rm -R",dirTmp))
+     file.remove(dirTmp,r=TRUE)
                 
      res[[1]][i,]}
   
@@ -341,7 +365,8 @@ runJKBlock<-function(x,n=5){
                 dirTmp=mkTmp()
                 setwd(dirTmp)
                  
-                system(paste("cp",file.path(dir,"*.*"),dirTmp))
+                file.copy(file.path(dirname(dat),"/"),dirTmp,r=T)
+                
                 iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"min"]&year<=key[i,"max"])[,"row"]
                 res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
                  
@@ -351,7 +376,7 @@ runJKBlock<-function(x,n=5){
                  
                 #clean up  
                 setwd(dirNow)
-                system(paste("rm -R",dirTmp))
+                file.remove(dirTmp,r=TRUE)
                
                 names(res[[1]])[1:11]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
 
