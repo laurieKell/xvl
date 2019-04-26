@@ -105,14 +105,17 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   #   system2("./ss3_3.24z",args="-nohess",stdout=NULL)
   
   # Linux
+  print("1")
   if (R.version$os=='linux-gnu') {
+    print("linux")
     #new version does not work with r4ss 
     if (newVer){
-      paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE),"SS3.exe", sep='/')
+      print("new")
+      exe=paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE),"SS3.exe", sep='/')
       file.copy(exe, dirTmp)
-      system2("wine",args="ss3.exe -nohess",stdout=NULL)
+      system2("wine",args="SS3.exe -nohess",stdout=NULL)
     }else{
-      exe = paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
+      exe=paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                       ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
       file.copy(exe, dirTmp)
       system2(ifelse(newVer,"./ss_opt","./ss3_3.24z"),args="-nohess",stdout=NULL)
