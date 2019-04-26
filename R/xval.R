@@ -83,8 +83,6 @@ mkTmp<-function(){
   dr}
 
 jkU<-function(i,u,tfl,dat,newVer=FALSE){
-  #print(u[i,])
-  
   ## copy files from target 
   dirNow=getwd()
   dirTmp=mkTmp()
@@ -105,7 +103,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   #   system2("./ss3_3.24z",args="-nohess",stdout=NULL)
   
   # Linux
-  print("1")
   if (R.version$os=='linux-gnu') {
     exe=paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                     ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
@@ -161,7 +158,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
-  print(1)
   hRsd=foreach(i=seq(dim(key)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
@@ -180,7 +176,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
        names(rtn)[3:13]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
 
        rtn}
-  print(2)
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
