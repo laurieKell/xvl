@@ -260,8 +260,12 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   
   rsdl=mdply(data.frame(i=yrs[seq(n)]),function(i)
         read.csv(file.path(dir,"hyrs",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
-  names(rsdl)=c("tail","fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se",
-                "dev","like","like.","sp","use")
+  if (dim(rsdl)[2]==20)
+    names(rsdl)=c("tail","fleet","name","area","year","season","year.","vulnerable","obs","hat","q","q.","se",
+                  "dev","like","like.","sp","use")
+  elde
+    names(rsdl)=c("tail","fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se",
+                 "dev","like","like.","sp","use")
   
   ts  =mdply(data.frame(i=yrs[seq(n)]),function(i) 
         read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
