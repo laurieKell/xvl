@@ -111,9 +111,9 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
     #new version does not work with r4ss 
     if (newVer){
       print("new")
-      exe=paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE),"SS3.exe", sep='/')
+      exe=paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE),"ss.exe", sep='/')
       file.copy(exe, dirTmp)
-      system2("wine",args="SS.exe -nohess",stdout=NULL)
+      system2("wine",args="ss.exe -nohess",stdout=NULL)
     }else{
       exe=paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                       ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
@@ -123,11 +123,11 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   # Windows
   } else if (.Platform$OS.type=='windows') {
     exe = paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE), 
-                ifelse(newVer,"SS3.exe","SS.exe"), sep='/')
+                ifelse(newVer,"SS.exe","ss3.exe"), sep='/')
     
     file.copy(exe, dirTmp)
     
-    system2(ifelse(newVer,"SS3.exe","SS.exe"),args="-nohess",stdout=NULL)
+    system2(ifelse(newVer,"ss.exe","ss3.exe"),args="-nohess",stdout=NULL)
   }else 
     stop()
 
