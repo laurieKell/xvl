@@ -186,7 +186,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
   
   nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
         "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-  
   names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
                "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
   names(rsdl)[-1]=nms[names(rsdl)[-1]]
@@ -323,12 +322,12 @@ runJK<-function(x){
                 
      res[[1]][i,]}
   
-  pRsd=pRsd[,1:11]
-  names(pRsd)=c("fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se")
+  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+  names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+               "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use") 
+  names(pRsd)=nms[names(pRsd)]
   
-  #rsdl=mdply(data.frame(i=seq(length(fls$u$row))),function(i)
-  #  read.csv(file.path(dirX,paste("prd",i,".csv",sep="")),header=T,sep=" ")[i,])
-
   ts  =mdply(data.frame(i=seq(length(fls$u$row))),function(i) 
     read.csv(file.path(dirX,paste("ts",i,".csv",sep="")),header=T,sep=" "))
   names(ts)=c("i","area","year","era","season","biomass","biomass.","ssb")
