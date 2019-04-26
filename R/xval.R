@@ -10,7 +10,6 @@ nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
 names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
                      "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
 
-
 ## Sets up the files for the jackknife
 setJK<-function(x){
   
@@ -254,7 +253,6 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   
   rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
         read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
-  names(rsdl)[-1]=nms[tolower(names(rsdl)[-1])]
   names(rsdl)[1] ="tail"
   
   ts  =mdply(data.frame(i=yrs[seq(n)]),function(i) 
