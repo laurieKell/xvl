@@ -297,7 +297,7 @@ runJK<-function(x){
   pRsd=foreach(i=seq(length(fls$u$row)),
      .multicombine=TRUE,
      .combine     =rbind,
-     .packages    =c("r4ss","xval")) %dopar%{
+     .packages    =c("r4ss","xvl")) %dopar%{
                 
      ## copy files from target 
      dirTmp=xvl:::mkTmp()
