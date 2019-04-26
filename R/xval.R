@@ -167,14 +167,17 @@ runHcst<-function(x,n=10,newVer=FALSE){
        res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
        rtn=cbind(tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
-                 subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))[,1:13]
+                 subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
 
        write.table(res[[1]],file=file.path(dir, "hcast",paste("rsd",i,".csv",sep="")))
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
-       names(rtn)[3:13]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
-
+       if (newVer)
+         names(rtn)[3:15]=c("fleet","name","area","year","season","month","year.","vuln","obs","hat","q","eff","se")
+       else
+         names(rtn)[3:13]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
+       
        rtn}
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
@@ -241,7 +244,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      
      if (newVer){
          rtn=cbind(tail=i,subset(res$u,Yr>=i))[,1:13]
-         names(rtn)[2:13]=c("fleet","name","area","year","season","year.","vuln","obs","hat","q","eff","se")
+         names(rtn)[2:15]=c("fleet","name","area","year","season","month","year.","vuln","obs","hat","q","eff","se")
      } else {
          rtn=cbind(tail=i, subset(res$u,Yr>=i))[,1:12]
          names(rtn)[2:12]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
