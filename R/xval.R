@@ -113,7 +113,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
       print("new")
       exe=paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE),"SS3.exe", sep='/')
       file.copy(exe, dirTmp)
-      system2("wine",args="SS3.exe -nohess",stdout=NULL)
+      system2("wine",args="SS.exe -nohess",stdout=NULL)
     }else{
       exe=paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
                       ifelse(newVer,"ss_opt","ss3_3.24z"), sep='/')
