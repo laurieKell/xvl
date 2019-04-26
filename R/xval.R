@@ -248,7 +248,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
                   "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
      names(res$u)=nms[names(res$u)]
-     rtn=cbind(tail=i,subset(res$u,Yr>=i))
+     rtn=cbind(tail=i,subset(res$u,year>=i))
      
      rtn=merge(rtn,naive,by="fleet")
      
