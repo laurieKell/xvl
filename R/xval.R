@@ -182,12 +182,14 @@ runHcst<-function(x,n=10,newVer=FALSE){
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
-  if (newVer)
-    names(rsdl)=c("key","fleet","name","area","year","season","year.","vulnerable","obs","hat","q","q.","se",
-                  "dev","like","like.","sp","use")
-  else
-    names(rsdl)=c("key","fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se",
-                  "dev","like","like.","sp","use")
+  
+  
+  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+  
+  names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+               "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
+  names(rsdl)[-1]=nms[names(rsdl)[-1]]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
@@ -240,15 +242,14 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      #   facet_grid(name~.,scale="free")
      naive=subset(fls$u,year==i)[,c("fleet","obs")]
      names(naive)[2]="naive"
-     
-     
-     if (newVer){
-         rtn=cbind(tail=i,subset(res$u,Yr>=i))[,1:13]
-         names(rtn)[2:15]=c("fleet","name","area","year","season","month","year.","vuln","obs","hat","q","eff","se")
-     } else {
-         rtn=cbind(tail=i, subset(res$u,Yr>=i))[,1:12]
-         names(rtn)[2:12]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
-     }
+   
+     nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+           "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+    
+     names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                  "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
+     names(res$u)=nms[names(res$u)]
+     rtn=cbind(tail=i,subset(res$u,Yr>=i))
      
      rtn=merge(rtn,naive,by="fleet")
      
