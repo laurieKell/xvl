@@ -5,7 +5,12 @@ require(plyr)
 require(doParallel)
 require(foreach)
 
-## Sets up the files for the jackknife
+nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+      "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                     "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
+
+
 ## Sets up the files for the jackknife
 setJK<-function(x){
   
@@ -173,22 +178,14 @@ runHcst<-function(x,n=10,newVer=FALSE){
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
-       if (newVer)
-         names(rtn)[3:15]=c("fleet","name","area","year","season","month","year.","vuln","obs","hat","q","eff","se")
-       else
-         names(rtn)[3:13]=c("fleet","name","year","season","year.","vuln","obs","hat","q","eff","se")
+       names(rtn)=nms[tolower(names(rtn))]       
        
        rtn}
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
   
-  
-  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-  names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-               "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
-  names(rsdl)[-1]=nms[names(rsdl)[-1]]
+  names(rsdl)[-1]=nms[tolower(names(rsdl)[-1])]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
@@ -242,12 +239,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      naive=subset(fls$u,year==i)[,c("fleet","obs")]
      names(naive)[2]="naive"
    
-     nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-           "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-    
-     names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                  "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")  
-     names(res$u)=nms[names(res$u)]
+     names(res$u)=nms[tolower(names(res$u))]
      rtn=cbind(tail=i,subset(res$u,year>=i))
      
      rtn=merge(rtn,naive,by="fleet")
@@ -256,19 +248,14 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      write.table(res[[2]],file=file.path(dir, "hyrs",paste("ref",i,".csv",sep="")))
      write.table(res[[3]],file=file.path(dir, "hyrs",paste("ts" ,i,".csv",sep="")))
                  
-     
      rtn
      #hRsd=rbind.fill(hRsd,rtn)
      }
   
-  rsdl=mdply(data.frame(i=yrs[seq(n)]),function(i)
-        read.csv(file.path(dir,"hyrs",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
-  if (dim(rsdl)[2]==20)
-    names(rsdl)=c("tail","fleet","name","area","year","season","year.","vulnerable","obs","hat","q","q.","se",
-                  "dev","like","like.","sp","use")
-  else
-    names(rsdl)=c("tail","fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se",
-                 "dev","like","like.","sp","use")
+  rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
+        read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
+  names(rsdl)[-1]=nms[tolower(names(rsdl)[-1])]
+  names(rsdl)[1] ="tail"
   
   ts  =mdply(data.frame(i=yrs[seq(n)]),function(i) 
         read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
@@ -322,11 +309,7 @@ runJK<-function(x){
                 
      res[[1]][i,]}
   
-  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-  names(nms)=c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-               "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use") 
-  names(pRsd)=nms[names(pRsd)]
+  names(pRsd)=nms[tolower(names(pRsd))]
   
   ts  =mdply(data.frame(i=seq(length(fls$u$row))),function(i) 
     read.csv(file.path(dirX,paste("ts",i,".csv",sep="")),header=T,sep=" "))
