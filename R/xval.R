@@ -263,7 +263,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   if (dim(rsdl)[2]==20)
     names(rsdl)=c("tail","fleet","name","area","year","season","year.","vulnerable","obs","hat","q","q.","se",
                   "dev","like","like.","sp","use")
-  elde
+  else
     names(rsdl)=c("tail","fleet","name","year","season","year.","vulnerable","obs","hat","q","q.","se",
                  "dev","like","like.","sp","use")
   
