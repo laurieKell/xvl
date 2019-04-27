@@ -5,11 +5,6 @@ require(plyr)
 require(doParallel)
 require(foreach)
 
-nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-      "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                     "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
-
 ## Sets up the files for the jackknife
 setJK<-function(x){
   
@@ -87,6 +82,7 @@ mkTmp<-function(){
   dr}
 
 jkU<-function(i,u,tfl,dat,newVer=FALSE){
+  
   ## copy files from target 
   dirNow=getwd()
   dirTmp=mkTmp()
@@ -123,6 +119,9 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   }else 
     stop()
 
+  cat(file.exists(file.path(dirTmp,"Report.sso"),file="/home/laurence/Desktop/tmp.txt",append=TRUE)
+  cat(dirTmp,                                    file="/home/laurence/Desktop/tmp.txt",append=TRUE)
+  
   #get results
   ssf=SS_output(getwd(), 
                 forecast  =FALSE, 
@@ -162,6 +161,8 @@ runHcst<-function(x,n=10,newVer=FALSE){
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
+  cat("\n",file="/home/laurence/Desktop/tmp.txt")
+
   hRsd=foreach(i=seq(dim(key)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
@@ -169,6 +170,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
        res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
+       rtn=data.frame(tail =key[i,"year"])
        rtn=cbind(tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
@@ -177,25 +179,36 @@ runHcst<-function(x,n=10,newVer=FALSE){
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
+       nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+             "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+       
+       names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                            "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
+       
        names(rtn)=nms[tolower(names(rtn))]       
        
        rtn}
   
+  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+  
+  names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                       "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
+  
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
-  
   names(rsdl)[-1]=nms[tolower(names(rsdl)[-1])]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
-  
   names(ts)=c("key","area","year","era","season","biomass","biomass.","ssb","rec")
   
   rf  =mdply(data.frame(i=seq(dim(key)[1])),function(i)   
     read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
+
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
-  
+
   return(list(hindcast  =hRsd,
               residuals =rsdl,
               timeseries=ts,
@@ -226,18 +239,15 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      iRw=subset(fls$u,year>=i)[,"row"]
      res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
     
-     ##bug
-     #ggplot(subset(h1[[1]],year==tail+1))+
-     #   geom_point(aes(year,obs))+
-     #   geom_point(aes(year,hat),col="red")+
-     #   geom_point(aes(year,naive),col="green")+
-     #   geom_line(aes(year,obs))+
-     #   geom_line(aes(year,hat),col="red")+
-     #   geom_line(aes(year,naive),col="green")+
-     #   facet_grid(name~.,scale="free")
      naive=subset(fls$u,year==i)[,c("fleet","obs")]
      names(naive)[2]="naive"
    
+     nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+           "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+     
+     names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                          "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
+     
      names(res$u)=nms[tolower(names(res$u))]
      rtn=cbind(tail=i,subset(res$u,year>=i))
      
@@ -306,6 +316,12 @@ runJK<-function(x){
      file.remove(dirTmp,r=TRUE)
                 
      res[[1]][i,]}
+  
+  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+  
+  names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                       "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
   
   names(pRsd)=nms[tolower(names(pRsd))]
   
