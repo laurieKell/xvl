@@ -5,6 +5,12 @@ require(plyr)
 require(doParallel)
 require(foreach)
 
+nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
+      "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
+
+names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
+                     "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
+
 ## Sets up the files for the jackknife
 setJK<-function(x){
   
@@ -179,25 +185,13 @@ runHcst<-function(x,n=10,newVer=FALSE){
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
-       nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-             "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-       
-       names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                            "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
-       
-       names(rtn)=nms[tolower(names(rtn))]       
+       names(rtn)=xvl:::nms[tolower(names(rtn))]       
        
        rtn}
-  
-  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-  
-  names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                       "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
-  
+
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
-  names(rsdl)[-1]=nms[tolower(names(rsdl)[-1])]
+  names(rsdl)[-1]=xvl:::nms[tolower(names(rsdl)[-1])]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
@@ -241,14 +235,8 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
     
      naive=subset(fls$u,year==i)[,c("fleet","obs")]
      names(naive)[2]="naive"
-   
-     nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-           "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-     
-     names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                          "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
-     
-     names(res$u)=nms[tolower(names(res$u))]
+
+     names(res$u)=xvl:::nms[tolower(names(res$u))]
      rtn=cbind(tail=i,subset(res$u,year>=i))
      
      rtn=merge(rtn,naive,by="fleet")
@@ -317,13 +305,7 @@ runJK<-function(x){
                 
      res[[1]][i,]}
   
-  nms=c("fleet","name","area","year","season","subseason","month","year.","vuln",
-        "obs","hat","q","eff","se","dev","ll","ll2","supr","use")
-  
-  names(nms)=tolower(c("Fleet","Fleet_name","Area","Yr","Seas","Subseas","Month","Time","Vuln_bio",
-                       "Obs","Exp","Calc_Q","Eff_Q","SE","Dev","Like","Like+log(s)","SuprPer","Use")) 
-  
-  names(pRsd)=nms[tolower(names(pRsd))]
+  names(pRsd)=xvl:::nms[tolower(names(pRsd))]
   
   ts  =mdply(data.frame(i=seq(length(fls$u$row))),function(i) 
     read.csv(file.path(dirX,paste("ts",i,".csv",sep="")),header=T,sep=" "))
