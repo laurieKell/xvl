@@ -102,12 +102,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
     tfl[j]=paste(unlist(subset(u[,-5],j==row)),sep=" ",collapse=" ")
   cat(tfl,sep="\n",file=file.path(dirTmp,substr(dat,nchar(dirname(dat))+2,nchar(dat))))
   
-  #run
-  #if (newVer)
-  #   system2("wine",args="ss.exe -nohess",stdout=NULL)
-  #else  
-  #   system2("./ss3_3.24z",args="-nohess",stdout=NULL)
-  
   # Linux
   if (R.version$os=='linux-gnu') {
     exe=paste(system.file('bin', 'linux', package="xvl", mustWork=TRUE),
@@ -125,8 +119,9 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   }else 
     stop()
 
-  cat(file.exists(file.path(dirTmp,"Report.sso"),file="/home/laurence/Desktop/tmp.txt",append=TRUE)
-  cat(dirTmp,                                    file="/home/laurence/Desktop/tmp.txt",append=TRUE)
+  cat(file.exists(file.path(dirTmp,"Report.sso")),file="/home/laurence/Desktop/tmp.txt",append=TRUE)
+  cat(dirTmp,                                     file="/home/laurence/Desktop/tmp.txt",append=TRUE)
+  cat(i,                                          file="/home/laurence/Desktop/tmp.txt",append=TRUE)
   
   #get results
   ssf=SS_output(getwd(), 
