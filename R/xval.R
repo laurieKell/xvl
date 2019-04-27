@@ -300,7 +300,7 @@ runJK<-function(x){
                 
      res[[1]][i,]}
   
-  names(pRsd)=xvl:::nms[tolower(names(pRsd))]
+  #names(pRsd)[nms%in%names(pRsd)]=xvl:::nms[tolower(names(pRsd))]
   
   ts  =mdply(data.frame(i=seq(length(fls$u$row))),function(i) 
     read.csv(file.path(dirX,paste("ts",i,".csv",sep="")),header=T,sep=" "))
