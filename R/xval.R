@@ -183,7 +183,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        rtn}
 
   
-  names(hRsd)[(-1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
+  names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
