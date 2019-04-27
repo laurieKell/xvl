@@ -180,7 +180,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
-       names(rtn)=xvl:::nms[tolower(names(rtn))]       
+       #names(rtn)=xvl:::nms[tolower(names(rtn))]       
        
        rtn}
 
