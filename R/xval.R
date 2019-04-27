@@ -183,7 +183,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        rtn}
 
   
-  names(hRsd)[,-(1:2)]=xvl:::nms[tolower(names(hRsd)[,-(1:2)])]       
+  names(hRsd)[(-1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
@@ -242,9 +242,8 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      write.table(res[[3]],file=file.path(dir, "hyrs",paste("ts" ,i,".csv",sep="")))
                  
      rtn
-     #hRsd=rbind.fill(hRsd,rtn)
      }
-  
+ 
   rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
         read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[1] ="tail"
