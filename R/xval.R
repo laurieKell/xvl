@@ -180,8 +180,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
 
-       #names(rtn)=xvl:::nms[tolower(names(rtn))]       
-       
        rtn}
 
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
@@ -197,6 +195,8 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
+
+  #names(rtn)=xvl:::nms[tolower(names(rtn))]       
 
   return(list(hindcast  =hRsd,
               residuals =rsdl,
