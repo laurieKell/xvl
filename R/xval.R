@@ -100,7 +100,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   u[,"fleet"]=-u[,"fleet"]
   for (j in i)
     tfl[j]=paste(unlist(subset(u[,-5],j==row)),sep=" ",collapse=" ")
-  cat(tfl,sep="\n",file=file.path(dirTmp,substr(dat,nchar(dirname(dat))+2,nchar(dat))))
   
   # Linux
   if (R.version$os=='linux-gnu') {
@@ -118,10 +117,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   }else 
     stop()
 
-  cat(file.exists(file.path(dirTmp,"Report.sso")),file="/home/laurence/Desktop/tmp.txt",append=TRUE)
-  cat(dirTmp,                                     file="/home/laurence/Desktop/tmp.txt",append=TRUE)
-  cat(i,                                          file="/home/laurence/Desktop/tmp.txt",append=TRUE)
-  
   #get results
   ssf=SS_output(getwd(), 
                 forecast  =FALSE, 
@@ -161,8 +156,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
-  cat("\n",file="/home/laurence/Desktop/tmp.txt")
-
   hRsd=foreach(i=seq(dim(key)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
