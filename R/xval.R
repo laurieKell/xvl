@@ -372,24 +372,24 @@ runJKBlock<-function(x,n=5){
   
   return(list(prediction=pRsd,timeseries=ts,refpts=rf))}
 
-if (FALSE){
-  ##set scenario
-  if (newVer)
-    fls=ddply(x, setJKNew)
-  else
-    fls=ddply(x, setJK)
-  
-  ##get key for runs
-  key=ldply(fls,function(x) subset(x$u,year>=max(year)-n+1))
-  yrs=ddply(key,.(x), function(x) rev(sort(unique(x$year))))
-  
-  ## create dirs
-  dir=adply(x,function(x) dirname(x))
-  d_ply(dir,function(x), dir.create(file.path(x,"hyrs")))
-  
-  
-  # https://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf 
-  foreach(b=bvec, .combine='rbind.fill') %:%
-    foreach(a=avec, .combine='rbind.fill') %dopar% {
-      sim(a, b)}
-  }
+# if (FALSE){
+#   ##set scenario
+#   if (newVer)
+#     fls=ddply(x, setJKNew)
+#   else
+#     fls=ddply(x, setJK)
+#   
+#   ##get key for runs
+#   key=ldply(fls,function(x) subset(x$u,year>=max(year)-n+1))
+#   yrs=ddply(key,.(x), function(x) rev(sort(unique(x$year))))
+#   
+#   ## create dirs
+#   dir=adply(x,function(x) dirname(x))
+#   d_ply(dir,function(x), dir.create(file.path(x,"hyrs")))
+#   
+#   
+#   # https://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf 
+#   foreach(b=bvec, .combine='rbind.fill') %:%
+#     foreach(a=avec, .combine='rbind.fill') %dopar% {
+#       sim(a, b)}
+#   }
