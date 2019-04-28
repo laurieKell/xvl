@@ -188,6 +188,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[-1]=xvl:::nms[tolower(names(rsdl)[-1])]
+  rsdl$tail=key$year[rsdl$i]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
@@ -370,3 +371,25 @@ runJKBlock<-function(x,n=5){
   names(rf)=c("i","variable","value")
   
   return(list(prediction=pRsd,timeseries=ts,refpts=rf))}
+
+if (FALSE){
+  ##set scenario
+  if (newVer)
+    fls=ddply(x, setJKNew)
+  else
+    fls=ddply(x, setJK)
+  
+  ##get key for runs
+  key=ldply(fls,function(x) subset(x$u,year>=max(year)-n+1))
+  yrs=ddply(key,.(x), function(x) rev(sort(unique(x$year))))
+  
+  ## create dirs
+  dir=adply(x,function(x) dirname(x))
+  d_ply(dir,function(x), dir.create(file.path(x,"hyrs")))
+  
+  
+  # https://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf 
+  foreach(b=bvec, .combine='rbind.fill') %:%
+    foreach(a=avec, .combine='rbind.fill') %dopar% {
+      sim(a, b)}
+  }
