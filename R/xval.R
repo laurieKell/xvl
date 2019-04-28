@@ -111,7 +111,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   # Windows
   } else if (.Platform$OS.type=='windows') {
     exe = paste(system.file('bin', 'windows', package="xvl", mustWork=TRUE), 
-                ifelse(newVer,"SS.exe","ss3.exe"), sep='/')
+                ifelse(newVer,"ss.exe","ss3.exe"), sep='/')
     
     file.copy(exe, dirTmp)
     
