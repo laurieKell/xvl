@@ -114,7 +114,6 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
                 ifelse(newVer,"ss.exe","ss3.exe"), sep='/')
     
     file.copy(exe, dirTmp)
-    
     system2(ifelse(newVer,"ss.exe","ss3.exe"),args="-nohess",stdout=NULL)
   }else 
     stop()
