@@ -100,6 +100,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   u[,"fleet"]=-u[,"fleet"]
   for (j in i)
     tfl[j]=paste(unlist(subset(u[,-5],j==row)),sep=" ",collapse=" ")
+  cat(tfl,sep="\n",file=file.path(dirTmp,substr(dat,nchar(dirname(dat))+2,nchar(dat))))
   
   # Linux
   if (R.version$os=='linux-gnu') {
@@ -163,7 +164,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
        res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
-       rtn=data.frame(tail =key[i,"year"])
+       
        rtn=cbind(tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
