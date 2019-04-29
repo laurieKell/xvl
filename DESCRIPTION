@@ -1,6 +1,6 @@
 Package: xvl
 Title: Tools for hindcast 
-Version: 0.0.1.0
+Version: 0.0.1.1
 Authors@R: person("Laurence Kell", email="lauriekell@seaplusplus.co.uk", role=c("aut","cre"))
 Description: Tools for hindcasting
     limited stocks.
