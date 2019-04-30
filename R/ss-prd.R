@@ -26,9 +26,9 @@ getRf<-function(x){
   
   cbind("quant"=c("hat","var"),as.data.frame(t(rf[,2:3])))}
 
-smrySS<-function(x,covar=TRUE,forecast=TRUE){
+smrySS<-function(x,covar=TRUE,forecast=TRUE,ncols=250){
   
-  ss=llply(x, function(x) SS_output(x, verbose=FALSE,printstats=FALSE,covar=covar,forecast=forecast))
+  ss=llply(x, function(x) SS_output(x, verbose=FALSE,printstats=FALSE,covar=covar,forecast=forecast,ncols=ncols))
   ts=ldply(ss, getTs) 
   pf=ldply(ss, getPellaT)
   rf=ldply(ss, getRf)
@@ -79,3 +79,9 @@ productionFn<-function(b,r,k,p){
   t1=b*r/p
   t3=(b/k)^p
   t1*(1-t3)}
+
+hat<-function(ssb,r,k,p) tMSE:::productionFn(ssb,r,k,p)
+pe <-function(year,ssb,catch,hat){
+      data.frame(year=year[-length(year)],
+                 pe=log((ssb[-1]+catch[-length(ssb)]-hat[-length(ssb)])/ssb[-length(ssb)]))}
+

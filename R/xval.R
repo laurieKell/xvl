@@ -126,7 +126,8 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
                 verbose   =FALSE, 
                 printstats=FALSE, 
                 hidewarn  =TRUE, 
-                NoCompOK  =TRUE)
+                NoCompOK  =TRUE,
+                ncols     =250)
   
   rfs=c("SSB_Unfished",    "TotBio_Unfished", "SmryBio_Unfished", "Recr_Unfished",  "SSB_Btgt",        
         "SPR_Btgt",        "Fstd_Btgt",       "TotYield_Btgt",    "SSB_SPRtgt",     "Fstd_SPRtgt",     
@@ -163,7 +164,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        .packages    =c("xvl","r4ss")) %dopar%{
 
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
-       res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
+       res=jkU(iRw,fls$u,fls$dfl,x,newVer)
        
        rtn=cbind(tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
@@ -221,7 +222,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   #for(i in yrs[seq(n)]){
   
      iRw=subset(fls$u,year>=i)[,"row"]
-     res=xvl:::jkU(iRw,fls$u,fls$dfl,x,newVer)
+     res=jkU(iRw,fls$u,fls$dfl,x,newVer)
     
      naive=subset(fls$u,year==i)[,c("fleet","obs")]
      names(naive)[2]="naive"
