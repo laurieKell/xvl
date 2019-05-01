@@ -178,6 +178,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
   
   names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
+  names(hRsd)[1]="key"
   
   rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
     read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
@@ -381,9 +382,9 @@ runJKBlock<-function(x,n=5){
 #   dir=adply(x,function(x) dirname(x))
 #   d_ply(dir,function(x), dir.create(file.path(x,"hyrs")))
 #   
-#   
 #   # https://cran.r-project.org/web/packages/foreach/vignettes/nested.pdf 
 #   foreach(b=bvec, .combine='rbind.fill') %:%
 #     foreach(a=avec, .combine='rbind.fill') %dopar% {
 #       sim(a, b)}
 #   }
+
