@@ -178,10 +178,10 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
   names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
 
-  rsdl=mdply(data.frame(i=seq(dim(key)[1])),function(i)
-    read.csv(file.path(dir,"hcast",paste("rsd",i,".csv",sep="")),header=T,sep=" "))
+  rsdl=mdply(data.frame(key=seq(dim(key)[1])),function(i)
+    read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[-1]=xvl:::nms[tolower(names(rsdl)[-1])]
-  rsdl$tail=key$year[rsdl$i]
+  rsdl$tail=key$year[rsdl$key]
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
