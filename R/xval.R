@@ -189,7 +189,6 @@ runHcst<-function(x,n=10,newVer=FALSE){
   
   rf  =mdply(data.frame(i=seq(dim(key)[1])),function(i)   
     read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
-
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
   
