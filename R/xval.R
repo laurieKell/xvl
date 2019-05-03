@@ -192,6 +192,8 @@ runHcst<-function(x,n=10,newVer=FALSE){
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
   
+  names(key)[1]="tail"
+  
   return(list(hindcast  =hRsd,
               residuals =rsdl,
               timeseries=ts,
