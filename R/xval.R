@@ -166,7 +166,8 @@ runHcst<-function(x,n=10,newVer=FALSE){
        iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
        res=jkU(iRw,fls$u,fls$dfl,x,newVer)
        
-       rtn=cbind(tail =key[i,"year"],
+       rtn=cbind(key  =i,
+                 tail =key[i,"year"],
                  naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
 
