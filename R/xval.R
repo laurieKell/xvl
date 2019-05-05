@@ -168,7 +168,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
        
        rtn=cbind(key  =i,
                  tail =key[i,"year"],
-                 naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
+                 #naive=fls$u[as.numeric(dimnames(subset(fls$u,fleet==key[i,"fleet"]&year==key[i,"year"]))[[1]]),"obs"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
 
        write.table(res[[1]],file=file.path(dir, "hcast",paste("rsd",i,".csv",sep="")))
@@ -224,13 +224,13 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      iRw=subset(fls$u,year>=i)[,"row"]
      res=jkU(iRw,fls$u,fls$dfl,x,newVer)
     
-     naive=subset(fls$u,year==i)[,c("fleet","obs")]
-     names(naive)[2]="naive"
+     #naive=subset(fls$u,year==i)[,c("fleet","obs")]
+     #names(naive)[2]="naive"
 
      names(res$u)=xvl:::nms[tolower(names(res$u))]
      rtn=cbind(tail=i,subset(res$u,year>=i))
      
-     rtn=merge(rtn,naive,by="fleet")
+     #rtn=merge(rtn,naive,by="fleet")
      
      write.table(res[[1]],file=file.path(dir, "hyrs",paste("rsd",i,".csv",sep="")))
      write.table(res[[2]],file=file.path(dir, "hyrs",paste("ref",i,".csv",sep="")))
@@ -239,6 +239,8 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      rtn
      }
  
+  names(hRsd)[1]="key"
+  
   rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
         read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[1] ="tail"
