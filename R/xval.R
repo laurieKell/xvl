@@ -192,7 +192,9 @@ runHcst<-function(x,n=10,newVer=FALSE){
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
   
-  names(key)[1]="tail"
+  names(key)[1]="key"
+  
+  rf=merge(rf,key,by="key")
   
   return(list(hindcast  =hRsd,
               residuals =rsdl,
@@ -244,7 +246,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
         read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[1] ="tail"
-  
+
   ts  =mdply(data.frame(i=yrs[seq(n)]),function(i) 
         read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
   names(ts)=c("tail","area","year","era","season","biomass","biomass.","ssb","rec")
