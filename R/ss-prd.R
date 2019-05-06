@@ -80,8 +80,30 @@ productionFn<-function(b,r,k,p){
   t3=(b/k)^p
   t1*(1-t3)}
 
-hat<-function(ssb,r,k,p) tMSE:::productionFn(ssb,r,k,p)
+hat<-function(ssb,r,k,p) productionFn(ssb,r,k,p)
 pe <-function(year,ssb,catch,hat){
-      data.frame(year=year[-length(year)],
+        data.frame(year=year[-length(year)],
                  pe=log((ssb[-1]+catch[-length(ssb)]-hat[-length(ssb)])/ssb[-length(ssb)]))}
+
+phase<-function(bmsy,msy,maxyield){
+  
+    fn1<-function(bmsy,msy)
+            data.frame(x=c(0,  0, bmsy,bmsy,0),
+                       y=c(0, Inf, Inf,   0,0))
+    fn2<-function(bmsy,msy)
+            data.frame(x=c(Inf, Inf,bmsy,bmsy,Inf),
+                       y=c(Inf, Inf, Inf,   0,  0))
+    fn3<-function(bmsy,msy)
+            data.frame(x=c(0, bmsy,bmsy,0),
+                       y=c(0,  msy, 0,  0))
+    fn4<-function(bmsy,msy,maxyield)
+            data.frame(x=c(bmsy,    bmsy, bmsy/msy*maxyield,bmsy),
+                       y=c( msy,maxyield,          maxyield, msy))
+  
+    rbind(cbind(what=1,fn1(bmsy,msy)),
+                 cbind(what=2,fn2(bmsy,msy)),
+                 cbind(what=3,fn3(bmsy,msy)),
+                 cbind(what=4,fn4(bmsy,msy,maxyield)))}
+
+
 

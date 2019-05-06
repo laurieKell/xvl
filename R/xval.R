@@ -221,7 +221,6 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
                .multicombine=TRUE,
                .combine     =rbind.fill,
                .packages    =c("xvl","r4ss")) %dopar%{
-  #for(i in yrs[seq(n)]){
   
      iRw=subset(fls$u,year>=i)[,"row"]
      res=jkU(iRw,fls$u,fls$dfl,x,newVer)
