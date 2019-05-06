@@ -183,7 +183,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   
   rsdl=mdply(data.frame(key=seq(dim(key)[1])),function(key)
     read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
-  names(rsdl)[-(1:3)]=xvl:::nms[tolower(names(rsdl)[-(1:3)])]
+  names(rsdl)[-(1:2)]=xvl:::nms[tolower(names(rsdl)[-(1:2)])]
   rsdl=merge(rsdl,key[,c("key","tail")])
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
