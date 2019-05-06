@@ -178,29 +178,30 @@ runHcst<-function(x,n=10,newVer=FALSE){
 
   names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
 
+  key=cbind(key=seq(dim(key)[1]),key)
+  names(key)[2]="tail"
+  
   rsdl=mdply(data.frame(key=seq(dim(key)[1])),function(key)
     read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[-(1:3)]=xvl:::nms[tolower(names(rsdl)[-(1:3)])]
-              
+  rsdl=merge(rsdl,key[,c("key","tail")])
+  
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
   names(ts)=c("key","area","year","era","season","biomass","biomass.","ssb","rec")
+  ts=merge(ts,key[,c("key","tail")])
   
   rf  =mdply(data.frame(i=seq(dim(key)[1])),function(i)   
     read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
-  
-  names(key)[1]="tail"
-  rf=merge(rf,key,by="key")
-
-  ts=cbind(h[[5]][ts$key,"tail"],ts)
+  rf=merge(rf,key[,c("key","tail")])
   
   return(list(hindcast  =hRsd,
               residuals =rsdl,
               timeseries=ts,
               refpts    =rf,
-              key       =data.frame("key"=seq(dim(key)[1]),key)))}
+              key       =key))}
 
 runHcstYr<-function(x,n=5,newVer=FALSE){
   
