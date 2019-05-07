@@ -144,7 +144,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
-runHcst<-function(x,n=10,newVer=FALSE){
+runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
 
   ## process files
   if (newVer)
@@ -158,7 +158,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
-  hRsd=foreach(i=seq(dim(key)[1]),
+  hRsd=foreach(i=seq(dim(key)[1])[from:to],
        .multicombine=TRUE,
        .combine     =rbind.fill,
        .packages    =c("xvl","r4ss")) %dopar%{
@@ -183,7 +183,7 @@ runHcst<-function(x,n=10,newVer=FALSE){
   
   rsdl=mdply(data.frame(key=seq(dim(key)[1])),function(key)
     read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
-  names(rsdl)[-(1:2)]=xvl:::nms[tolower(names(rsdl)[-(1:2)])]
+  names(rsdl)[-(1)]=xvl:::nms[tolower(names(rsdl)[-(1)])]
   rsdl=merge(rsdl,key[,c("key","tail")])
   
   ts  =mdply(data.frame(i=seq(dim(key)[1])),function(i) 
@@ -386,4 +386,5 @@ runJKBlock<-function(x,n=5){
 #     foreach(a=avec, .combine='rbind.fill') %dopar% {
 #       sim(a, b)}
 #   }
+
 
