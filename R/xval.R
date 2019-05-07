@@ -178,7 +178,7 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
 
   names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]       
 
-  key=cbind(key=seq(dim(key)[1]),key)[from:to,]
+  key=cbind(key=seq(dim(key)[1]),key)
   names(key)[2]="tail"
   
   rsdl=mdply(data.frame(key=seq(dim(key)[1])[from:to]),function(key)
@@ -201,7 +201,7 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
               residuals =rsdl,
               timeseries=ts,
               refpts    =rf,
-              key       =key))}
+              key       =key[from:to,]))}
 
 runHcstYr<-function(x,n=5,newVer=FALSE){
   
