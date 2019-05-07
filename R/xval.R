@@ -170,6 +170,7 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
                  tail =key[i,"year"],
                  subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
 
+       write.table(rtn,     file=file.path(dir, "hcast",paste("rtn",i,".csv",sep="")))
        write.table(res[[1]],file=file.path(dir, "hcast",paste("rsd",i,".csv",sep="")))
        write.table(res[[2]],file=file.path(dir, "hcast",paste("ref",i,".csv",sep="")))
        write.table(res[[3]],file=file.path(dir, "hcast",paste("ts" ,i,".csv",sep="")))
