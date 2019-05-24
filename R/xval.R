@@ -91,7 +91,8 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   ## copy files from target 
   #dirNow=getwd()
-  dirTmp=getwd()
+  dirTmp=file.path(getwd(),"tmp")
+  dir.create(dirTmp)
   #dirTmp=mkTmp()
   setwd(dirTmp)
 
