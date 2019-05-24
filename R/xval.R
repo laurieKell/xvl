@@ -90,8 +90,9 @@ mkTmp<-function(){
 jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   ## copy files from target 
-  dirNow=getwd()
-  dirTmp=mkTmp()
+  #dirNow=getwd()
+  dirTmp=getwd()
+  #dirTmp=mkTmp()
   setwd(dirTmp)
 
   file.copy(file.path(dirname(dat),"."),dirTmp,r=T)
@@ -144,7 +145,18 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
-runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
+keyHcst<-function(x,newVer=FALSE){
+    
+  ## process files
+  if (newVer)
+    fls=setJKNew(x)
+  else   
+    fls=setJK(x)
+  
+  key=ddply(fls$u,.(fleet), transform, maxyr=max(year))
+  subset(key,year>=(maxyr-n)&year<maxyr)[,-7]}
+
+runHcst<-function(x,n=10,from=1,to=NULL,newVer=FALSE){
 
   ## process files
   if (newVer)
@@ -155,6 +167,8 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
   key=ddply(fls$u,.(fleet), transform, maxyr=max(year))
   key=subset(key,year>=(maxyr-n)&year<maxyr)[,-7]
   
+  if (is.null(to)) to=dim(key)[1]
+  
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
   
@@ -163,7 +177,7 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
        .combine     =rbind.fill,
        .packages    =c("xvl","r4ss")) %dopar%{
 
-       iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"year"])[,"row"]
+       iRw=subset(fls$u,fleet==key[i,"fleet"]&year>=key[i,"year"])[,"row"]
        res=jkU(iRw,fls$u,fls$dfl,x,newVer)
        
        rtn=cbind(key  =i,
@@ -181,6 +195,12 @@ runHcst<-function(x,n=10,from=1,to=n,newVer=FALSE){
 
   key=cbind(key=seq(dim(key)[1]),key)
   names(key)[2]="tail"
+  
+  hRsd=mdply(data.frame(key=seq(dim(key)[1])[from:to]),function(key)
+    read.csv(file.path(dir,"hcast",paste("rtn",key,".csv",sep="")),header=T,sep=" "))
+  names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
+  hRsd=merge(hRsd,key[,c("key","tail")])
+  hRsd=hRsd[do.call("order",hRsd[,c("fleet","tail","year")]),]
   
   rsdl=mdply(data.frame(key=seq(dim(key)[1])[from:to]),function(key)
     read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
@@ -228,7 +248,7 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
      res=jkU(iRw,fls$u,fls$dfl,x,newVer)
     
      names(res$u)=xvl:::nms[tolower(names(res$u))]
-     rtn=cbind(tail=i,subset(res$u,year>=i))
+     rtn=cbind(tail=i,subset(res$u,year>=i-1))
      
      write.table(res[[1]],file=file.path(dir, "hyrs",paste("rsd",i,".csv",sep="")))
      write.table(res[[2]],file=file.path(dir, "hyrs",paste("ref",i,".csv",sep="")))
@@ -242,7 +262,8 @@ runHcstYr<-function(x,n=5,newVer=FALSE){
   rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
         read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[1] ="tail"
-
+  rsdl=rsdl[do.call("order",rsdl[,c("fleet","tail","year")]),]
+  
   ts  =mdply(data.frame(i=yrs[seq(n)]),function(i) 
         read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
   names(ts)=c("tail","area","year","era","season","biomass","biomass.","ssb","rec")
