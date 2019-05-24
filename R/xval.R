@@ -91,7 +91,13 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   ## copy files from target 
   dirNow=getwd()
-  dirTmp=mkTmp()
+  
+  ## bug
+  #dirTmp=mkTmp()
+  dr=tempfile()
+  dirTmp=file.path(getwd(),substr(dr,nchar(dirname(dr))+2,nchar(dr)))
+  dir.create(dirTmp)
+  
   setwd(dirTmp)
 
   file.copy(file.path(dirname(dat),"."),dirTmp,r=T)
@@ -352,11 +358,7 @@ runJKBlock<-function(x,n=5){
                .packages    =c("r4ss","xvl")) %dopar%{
                  
                 ## copy files from target 
-                #dirTmp=mkTmp()
-                dr=tempfile()
-                dirTmp=file.path(getwd(),substr(dr,nchar(dirname(dr))+2,nchar(dr)))
-                dir.create(dirTmp)
-                 
+                dirTmp=mkTmp()
                 setwd(dirTmp)
                  
                 #file.copy(file.path(dirname(dat),"/"),dirTmp,r=T)
