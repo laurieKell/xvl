@@ -147,6 +147,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   setwd(dirNow)
   file.remove(file.path(dirTmp,list.files(dirTmp)))
   file.remove(dirTmp)
+  #file.remove(dirname(dirTmp))
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
