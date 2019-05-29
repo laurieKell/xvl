@@ -94,13 +94,12 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   ## bug
   dirTmp=mkTmp()
-  #dr=tempfile()
-  #dirTmp=file.path(getwd(),substr(dr,nchar(dirname(dr))+2,nchar(dr)))
-  dir.create(dirTmp)
-  
   setwd(dirTmp)
 
-  file.copy(file.path(dirname(dat),"."),dirTmp,recursive=FALSE)
+  #Only copy files
+  file.copy(file.path(dirname(dat),
+            list.files(dirname(dat))[!dir.exists(file.path(dirname(dat),list.files(dirname(dat))))]),
+            dirTmp,recursive=TRUE)
   
   #leave out obs
   u[,"fleet"]=-u[,"fleet"]
