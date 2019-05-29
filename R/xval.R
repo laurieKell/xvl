@@ -93,14 +93,14 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   dirNow=getwd()
   
   ## bug
-  #dirTmp=mkTmp()
-  dr=tempfile()
-  dirTmp=file.path(getwd(),substr(dr,nchar(dirname(dr))+2,nchar(dr)))
+  dirTmp=mkTmp()
+  #dr=tempfile()
+  #dirTmp=file.path(getwd(),substr(dr,nchar(dirname(dr))+2,nchar(dr)))
   dir.create(dirTmp)
   
   setwd(dirTmp)
 
-  file.copy(file.path(dirname(dat),"."),dirTmp,r=T)
+  file.copy(file.path(dirname(dat),"."),dirTmp,recursive=FALSE)
   
   #leave out obs
   u[,"fleet"]=-u[,"fleet"]
@@ -146,7 +146,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   #clean up  
   setwd(dirNow)
-  #file.remove(dirTmp,r=T)
+  file.remove(dirTmp,r=T)
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
@@ -306,8 +306,7 @@ runJK<-function(x){
      dirTmp=xvl:::mkTmp()
      setwd(dirTmp)
                 
-     #file.copy(file.path(dirname(dir),"/"),dirTmp,r=T)
-     file.copy(file.path(dirname(dir),"."),,dirTmp,r=T)
+     file.copy(file.path(dirname(dir),"."),dirTmp,recursive=FALSE)
      
      iRw=fls$u[i,"row"]
      res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
@@ -361,8 +360,7 @@ runJKBlock<-function(x,n=5){
                 dirTmp=mkTmp()
                 setwd(dirTmp)
                  
-                #file.copy(file.path(dirname(dat),"/"),dirTmp,r=T)
-                file.copy(file.path(dirname(dat),"."),,dirTmp,r=T)
+                file.copy(file.path(dirname(dat),"."),dirTmp,recursive=FALSE)
                 
                 iRw=subset(fls$u,fleet==key[i,"fleet"]&year>key[i,"min"]&year<=key[i,"max"])[,"row"]
                 res=xvl:::jkU(iRw,fls$u,fls$dfl,file.path(dirTmp,dat))
