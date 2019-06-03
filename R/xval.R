@@ -150,7 +150,7 @@ jkU<-function(i,u,tfl,dat,newVer=FALSE){
   
   list(u=ssf$cpue,rf=rf,ts=ts)}
 
-keyHcst<-function(x,newVer=FALSE){
+keyHcst<-function(x,n=10,newVer=FALSE){
     
   ## process files
   if (newVer)
@@ -159,7 +159,9 @@ keyHcst<-function(x,newVer=FALSE){
     fls=setJK(x)
   
   key=ddply(fls$u,.(fleet), transform, maxyr=max(year))
-  subset(key,year>=(maxyr-n)&year<maxyr)[,-7]}
+  key=subset(key,year>=(maxyr-n)&year<maxyr)[,-7]
+  key[!duplicated(key[,c("fleet","year")]),]
+  }
 
 runHcst<-function(x,n=10,from=1,to=NULL,newVer=FALSE){
 
@@ -171,6 +173,7 @@ runHcst<-function(x,n=10,from=1,to=NULL,newVer=FALSE){
  
   key=ddply(fls$u,.(fleet), transform, maxyr=max(year))
   key=subset(key,year>=(maxyr-n)&year<maxyr)[,-7]
+  key=key[!duplicated(key[,c("fleet","year")]),]
   
   if (is.null(to)) to=dim(key)[1]
   
