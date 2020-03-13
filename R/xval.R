@@ -222,23 +222,23 @@ runHcst<-function(x,n=10,newVer=FALSE,exe=NULL){
   key=cbind(key=seq(dim(key)[1]),key)
   names(key)[2]="tail"
 
-  hRsd=mdply(data.frame(key=seq(dim(key)[1])[from:to]),function(key)
+  hRsd=mdply(data.frame(key=seq(dim(key)[1])[n]),function(key)
     read.csv(file.path(dir,"hcast",paste("rtn",key,".csv",sep="")),header=T,sep=" "))
   names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
   hRsd=merge(hRsd,key[,c("key","tail")])
   hRsd=hRsd[do.call("order",hRsd[,c("fleet","tail","year")]),]
 
-  rsdl=mdply(data.frame(key=seq(dim(key)[1])[from:to]),function(key)
+  rsdl=mdply(data.frame(key=seq(dim(key)[1])[n]),function(key)
     read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
   names(rsdl)[-(1)]=xvl:::nms[tolower(names(rsdl)[-(1)])]
   rsdl=merge(rsdl,key[,c("key","tail")])
 
-  ts  =mdply(data.frame(i=seq(dim(key)[1])[from:to]),function(i)
+  ts  =mdply(data.frame(i=seq(dim(key)[1])[n]),function(i)
     read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
   names(ts)=c("key","area","year","era","season","biomass","biomass.","ssb","rec")
   ts=merge(ts,key[,c("key","tail")])
 
-  rf  =mdply(data.frame(i=seq(dim(key)[1])[from:to]),function(i)
+  rf  =mdply(data.frame(i=seq(dim(key)[1])[n]),function(i)
     read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
