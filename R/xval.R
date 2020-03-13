@@ -248,7 +248,7 @@ runHcst<-function(x,n=10,newVer=FALSE,exe=NULL){
               residuals =rsdl,
               timeseries=ts,
               refpts    =rf,
-              key       =key[from:to,]))}
+              key       =key[n,]))}
 
 runHcstYr<-function(x,n=5,newVer=FALSE,exe=NULL){
 
