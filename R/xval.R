@@ -194,21 +194,25 @@ runHcst<-function(x,n=10,newVer=FALSE,exe=NULL){
   key=ddply(fls$u,.(fleet), transform, maxyr=max(year))
   key=subset(key,year>=(maxyr-max(n)&year<maxyr))[,-7]
   key=key[!duplicated(key[,c("fleet","year")]),]
+  yrs=rev(unique(key$year))[n]
+  inx=subset(key,year%in%yrs)
 
   dir=dirname(x)
   dir.create(file.path(dir,"hcast"))
-
-  hRsd=foreach(i=rev(seq(dim(key)[1]))[n],
+  
+  write.table(inx, file=file.path(dir,"hcast","inx.csv"))
+  
+  hRsd=foreach(i=seq(dim(inx)[1]),
        .multicombine=TRUE,
        .combine     =rbind.fill,
        .packages    =c("xvl","r4ss")) %dopar%{
 
-       iRw=subset(fls$u,fleet==key[i,"fleet"]&year>=key[i,"year"])[,"row"]
+       iRw=inx[i,"row"]
        res=jkU(iRw,fls$u,fls$dfl,x,newVer,exe=exe)
 
-       rtn=cbind(key  =i,
-                 tail =key[i,"year"],
-                 subset(res$u,Fleet==key[i,"fleet"]&Yr>=key[i,"year"]))
+       rtn=cbind(key  =inx[i,"row"],
+                 tail =inx[i,"year"],
+                 subset(res$u,Fleet==inx[i,"fleet"]&Yr>=key[i,"year"]))
 
        write.table(rtn,     file=file.path(dir, "hcast",paste("rtn",i,".csv",sep="")))
        write.table(res[[1]],file=file.path(dir, "hcast",paste("rsd",i,".csv",sep="")))
@@ -217,37 +221,50 @@ runHcst<-function(x,n=10,newVer=FALSE,exe=NULL){
 
        rtn}
 
-  names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
+  #names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
 
-  key=cbind(key=seq(dim(key)[1]),key)
+  key=cbind(key=seq(dim(inx)[1]),inx)
   names(key)[2]="tail"
-  hRsd=mdply(data.frame(key=rev(seq(dim(key)[1]))[n]),function(key)
-    read.csv(file.path(dir,"hcast",paste("rtn",key,".csv",sep="")),header=T,sep=" "))
-  names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
-  hRsd=merge(hRsd,key[,c("key","tail")])
-  hRsd=hRsd[do.call("order",hRsd[,c("fleet","tail","year")]),]
 
-  rsdl=mdply(data.frame(key=rev(seq(dim(key)[1]))[n]),function(key)
-    read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
+  hRsd=mdply(data.frame(key=rev(seq(dim(inx)[1]))),function(key){
+    res=try(read.csv(file.path(dir,"hcast",paste("rtn",key,".csv",sep="")),header=T,sep=" "))
+    if ("try-error"%in%is(res)) return(NULL)
+    res
+    })
+  names(hRsd)[-(1:2)]=xvl:::nms[tolower(names(hRsd)[-(1:2)])]
+  #hRsd=merge(hRsd,key[,c("key","tail")])
+  hRsd=hRsd[do.call("order",hRsd[,c("fleet","tail","year")]),]
+  names(hRsd)[1]="row"
+  
+  rsdl=mdply(data.frame(key=rev(seq(dim(inx)[1]))),function(key){
+    res=try(read.csv(file.path(dir,"hcast",paste("rsd",key,".csv",sep="")),header=T,sep=" "))
+    if ("try-error"%in%is(res)) return(NULL)
+    res})
   names(rsdl)[-(1)]=xvl:::nms[tolower(names(rsdl)[-(1)])]
   rsdl=merge(rsdl,key[,c("key","tail")])
 
-  ts  =mdply(data.frame(i=rev(seq(dim(key)[1]))[n]),function(i)
-    read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
+  ts  =mdply(data.frame(i=rev(seq(dim(inx)[1]))),function(i){
+    res=try(read.csv(file.path(dir,"hcast",paste("ts",i,".csv",sep="")),header=T,sep=" "))
+    if ("try-error"%in%is(res)) return(NULL)
+    res})
   names(ts)=c("key","area","year","era","season","biomass","biomass.","ssb","rec")
   ts=merge(ts,key[,c("key","tail")])
 
-  rf  =mdply(data.frame(i=rev(seq(dim(key)[1]))[n]),function(i)
-    read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
+  rf  =mdply(data.frame(i=rev(seq(dim(inx)[1]))),function(i){
+    res=try(read.csv(file.path(dir,"hcast",paste("ref",i,".csv",sep="")),header=T,sep=" "))
+    if ("try-error"%in%is(res)) return(NULL)
+    res})
   rf=rf[,1:3]
   names(rf)=c("key","variable","value")
   rf=merge(rf,key[,c("key","tail")])
 
-  return(list(hindcast  =hRsd,
-              residuals =rsdl,
-              timeseries=ts,
-              refpts    =rf,
-              key       =key[n,]))}
+  h=list(hindcast  =hRsd,
+         residuals =rsdl,
+         timeseries=ts,
+         refpts    =rf,
+         key       =key)
+  
+  return(h)}
 
 runHcstYr<-function(x,n=5,newVer=FALSE,exe=NULL){
 
@@ -276,27 +293,37 @@ runHcstYr<-function(x,n=5,newVer=FALSE,exe=NULL){
 
      names(res$u)=xvl:::nms[tolower(names(res$u))]
      rtn=cbind(tail=i,subset(res$u,year>=i-1))
-
+     
+     write.table(rtn,     file=file.path(dir, "hyrs",paste("rtn",i,".csv",sep="")))
      write.table(res[[1]],file=file.path(dir, "hyrs",paste("rsd",i,".csv",sep="")))
      write.table(res[[2]],file=file.path(dir, "hyrs",paste("ref",i,".csv",sep="")))
      write.table(res[[3]],file=file.path(dir, "hyrs",paste("ts" ,i,".csv",sep="")))
 
-     rtn
-     }
+     rtn}
 
-  names(hRsd)[1]="tail"
-
-  rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail)
-        read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))
+  hRsd=mdply(data.frame(key=yrs[n]),function(key){
+    res=try(read.csv(file.path(dir,"hyrs",paste("rtn",key,".csv",sep="")),header=T,sep=" "))
+    if ("try-error"%in%is(res)) return(NULL)
+    res})
+  hRsd=hRsd[do.call("order",hRsd[,c("fleet","tail","year")]),-1]
+  
+  rsdl=mdply(data.frame(tail=yrs[seq(n)]),function(tail){
+        res=try(read.csv(file.path(dir,"hyrs",paste("rsd",tail,".csv",sep="")),header=T,sep=" "))    
+        if ("try-error"%in%is(res)) return(NULL)
+        res})
   names(rsdl)[1] ="tail"
   rsdl=rsdl[do.call("order",rsdl[,c("fleet","tail","year")]),]
 
-  ts  =mdply(data.frame(i=yrs[seq(n)]),function(i)
-        read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
+  ts  =mdply(data.frame(i=yrs[seq(n)]),function(i){
+        res=try(read.csv(file.path(dir,"hyrs",paste("ts",i,".csv",sep="")),header=T,sep=" "))
+        if ("try-error"%in%is(res)) return(NULL)
+        res})
   names(ts)=c("tail","area","year","era","season","biomass","biomass.","ssb","rec")
 
-  rf  =mdply(data.frame(i=yrs[seq(n)]),function(i)
-        read.csv(file.path(dir,"hyrs",paste("ref",i,".csv",sep="")),header=T,sep=" "))
+  rf  =mdply(data.frame(i=yrs[seq(n)]),function(i){
+        res=try(read.csv(file.path(dir,"hyrs",paste("ref",i,".csv",sep="")),header=T,sep=" "))
+        if ("try-error"%in%is(res)) return(NULL)
+        res})
   rf=rf[,1:3]
   names(rf)=c("tail","variable","value")
 
